@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Exercices — Fiche 2 | Convaincre vs Persuader</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700&family=DM+Sans:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:#0f1117;--surface:#181c27;--card:#1e2336;--border:#2a3050;
+    --accent:#f97316;--accent-soft:rgba(249,115,22,0.12);
+    --blue:#3b82f6;--blue-soft:rgba(59,130,246,0.12);
+    --green:#22c55e;--green-soft:rgba(34,197,94,0.12);
+    --red:#ef4444;--red-soft:rgba(239,68,68,0.12);
+    --yellow:#eab308;--yellow-soft:rgba(234,179,8,0.1);
+    --text:#e8eaf0;--muted:#8891a8;--heading:#ffffff;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding:0 0 60px;}
+
+  .header{background:var(--surface);border-bottom:1px solid var(--border);padding:24px 32px 20px;display:flex;align-items:center;gap:16px;position:sticky;top:0;z-index:10;}
+  .header-badge{background:var(--accent);color:#fff;font-family:'Sora',sans-serif;font-weight:700;font-size:11px;letter-spacing:.08em;text-transform:uppercase;padding:4px 10px;border-radius:4px;}
+  .header-title{font-family:'Sora',sans-serif;font-size:15px;font-weight:600;color:var(--heading);}
+  .header-sub{font-size:13px;color:var(--muted);margin-left:auto;}
+  .score-pill{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:6px 16px;font-family:'Sora',sans-serif;font-size:13px;font-weight:600;color:var(--heading);display:flex;align-items:center;gap:6px;}
+  .score-pill span{color:var(--accent);}
+
+  .container{max-width:780px;margin:0 auto;padding:32px 24px 0;}
+  .progress-wrap{background:var(--border);border-radius:4px;height:4px;margin-bottom:28px;overflow:hidden;}
+  .progress-bar{height:100%;background:linear-gradient(90deg,var(--accent),var(--blue));border-radius:4px;transition:width .4s ease;width:0%;}
+
+  .name-box{background:var(--card);border:1.5px solid var(--accent);border-radius:14px;padding:22px 24px;margin-bottom:24px;}
+  .name-label{font-family:'Sora',sans-serif;font-size:12px;font-weight:700;color:var(--accent);letter-spacing:.08em;text-transform:uppercase;margin-bottom:10px;}
+  .name-input{width:100%;background:var(--surface);border:1.5px solid var(--border);border-radius:10px;padding:12px 16px;color:var(--heading);font-family:'Sora',sans-serif;font-size:15px;font-weight:600;outline:none;transition:border-color .15s;}
+  .name-input:focus{border-color:var(--accent);}
+  .name-input::placeholder{color:var(--muted);font-weight:400;font-family:'DM Sans',sans-serif;font-size:14px;}
+
+  .intro-box{background:var(--accent-soft);border:1px solid rgba(249,115,22,.25);border-radius:12px;padding:16px 20px;margin-bottom:32px;font-size:14px;line-height:1.6;}
+  .intro-box strong{color:var(--accent);}
+
+  .section-label{display:flex;align-items:center;gap:10px;margin:36px 0 14px;}
+  .tag{font-family:'Sora',sans-serif;font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:3px 10px;border-radius:3px;}
+  .tag-qcm{background:var(--blue-soft);color:var(--blue);border:1px solid rgba(59,130,246,.25);}
+  .tag-vf{background:var(--yellow-soft);color:var(--yellow);border:1px solid rgba(234,179,8,.25);}
+  .tag-open{background:var(--accent-soft);color:var(--accent);border:1px solid rgba(249,115,22,.25);}
+  .section-line{flex:1;height:1px;background:var(--border);}
+
+  .q-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:24px;margin-bottom:16px;transition:border-color .2s;}
+  .q-card:hover{border-color:#3a4060;}
+  .q-number{font-family:'Sora',sans-serif;font-size:11px;font-weight:700;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;margin-bottom:10px;}
+  .q-text{font-size:15px;font-weight:500;color:var(--heading);line-height:1.55;margin-bottom:20px;}
+  .q-text em{display:block;margin-top:8px;font-style:italic;color:var(--muted);font-size:14px;}
+
+  .options{display:flex;flex-direction:column;gap:8px;margin-bottom:18px;}
+  .option{display:flex;align-items:flex-start;gap:12px;background:var(--surface);border:1.5px solid var(--border);border-radius:10px;padding:12px 16px;cursor:pointer;transition:all .15s;user-select:none;}
+  .option:hover{border-color:var(--blue);background:var(--blue-soft);}
+  .option.selected{border-color:var(--blue);background:var(--blue-soft);}
+  .option.correct{border-color:var(--green)!important;background:var(--green-soft)!important;}
+  .option.wrong{border-color:var(--red)!important;background:var(--red-soft)!important;}
+  .option.disabled{cursor:default;pointer-events:none;}
+  .option-letter{font-family:'Sora',sans-serif;font-size:12px;font-weight:700;min-width:22px;height:22px;display:flex;align-items:center;justify-content:center;border-radius:5px;background:var(--border);color:var(--muted);margin-top:1px;flex-shrink:0;transition:all .15s;}
+  .option.selected .option-letter{background:var(--blue);color:#fff;}
+  .option.correct .option-letter{background:var(--green);color:#fff;}
+  .option.wrong .option-letter{background:var(--red);color:#fff;}
+  .option-text{font-size:14px;line-height:1.5;color:var(--text);}
+
+  .vf-group{display:flex;gap:10px;margin-bottom:18px;}
+  .vf-btn{flex:1;padding:12px;border:1.5px solid var(--border);border-radius:10px;background:var(--surface);color:var(--text);font-family:'Sora',sans-serif;font-size:14px;font-weight:600;cursor:pointer;transition:all .15s;}
+  .vf-btn:hover{border-color:var(--yellow);background:var(--yellow-soft);}
+  .vf-btn.selected{border-color:var(--yellow);background:var(--yellow-soft);color:var(--yellow);}
+  .vf-btn.correct{border-color:var(--green)!important;background:var(--green-soft)!important;color:var(--green)!important;}
+  .vf-btn.wrong{border-color:var(--red)!important;background:var(--red-soft)!important;color:var(--red)!important;}
+  .vf-btn.disabled{cursor:default;pointer-events:none;}
+
+  .open-textarea{width:100%;min-height:110px;background:var(--surface);border:1.5px solid var(--border);border-radius:10px;padding:14px 16px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;line-height:1.6;resize:vertical;outline:none;transition:border-color .15s;margin-bottom:12px;}
+  .open-textarea:focus{border-color:var(--accent);}
+  .open-textarea::placeholder{color:var(--muted);font-style:italic;}
+
+  .btn-row{display:flex;gap:10px;align-items:center;flex-wrap:wrap;}
+  .btn{font-family:'Sora',sans-serif;font-size:13px;font-weight:600;padding:9px 18px;border-radius:8px;border:none;cursor:pointer;transition:all .15s;display:inline-flex;align-items:center;gap:6px;}
+  .btn-primary{background:var(--accent);color:#fff;}
+  .btn-primary:hover{background:#ea6c08;transform:translateY(-1px);}
+  .btn-primary:disabled{background:var(--border);color:var(--muted);cursor:default;transform:none;}
+  .btn-ghost{background:transparent;border:1.5px solid var(--border);color:var(--muted);}
+  .btn-ghost:hover{border-color:var(--accent);color:var(--accent);}
+
+  .feedback{margin-top:14px;padding:12px 16px;border-radius:10px;font-size:14px;line-height:1.6;display:none;animation:fadeIn .25s ease;}
+  .feedback.show{display:block;}
+  .feedback.correct-fb{background:var(--green-soft);border:1px solid rgba(34,197,94,.3);color:#86efac;}
+  .feedback.wrong-fb{background:var(--red-soft);border:1px solid rgba(239,68,68,.3);color:#fca5a5;}
+  .feedback.example-fb{background:var(--accent-soft);border:1px solid rgba(249,115,22,.25);color:var(--text);}
+  .feedback strong{display:block;margin-bottom:4px;font-family:'Sora',sans-serif;font-size:12px;letter-spacing:.05em;text-transform:uppercase;}
+  .feedback.correct-fb strong{color:var(--green);}
+  .feedback.wrong-fb strong{color:var(--red);}
+  .feedback.example-fb strong{color:var(--accent);}
+
+  .summary{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:32px;margin-top:40px;text-align:center;display:none;}
+  .summary.show{display:block;animation:fadeIn .4s ease;}
+  .summary-score{font-family:'Sora',sans-serif;font-size:52px;font-weight:700;color:var(--accent);line-height:1;margin-bottom:8px;}
+  .summary-sub{color:var(--muted);font-size:14px;margin-bottom:10px;}
+  .summary-msg{font-size:15px;color:var(--heading);margin-bottom:28px;}
+
+  .email-cta{background:linear-gradient(135deg,rgba(249,115,22,.15),rgba(59,130,246,.1));border:1.5px solid rgba(249,115,22,.35);border-radius:14px;padding:24px;margin-bottom:20px;}
+  .email-cta-title{font-family:'Sora',sans-serif;font-size:14px;font-weight:700;color:var(--heading);margin-bottom:6px;}
+  .email-cta-desc{font-size:13px;color:var(--muted);line-height:1.6;margin-bottom:18px;}
+  .email-cta-desc strong{color:var(--text);}
+  .btn-email{background:var(--accent);color:#fff;font-family:'Sora',sans-serif;font-size:15px;font-weight:700;padding:14px 32px;border-radius:10px;border:none;cursor:pointer;transition:all .2s;display:inline-flex;align-items:center;gap:10px;box-shadow:0 4px 20px rgba(249,115,22,.35);}
+  .btn-email:hover{background:#ea6c08;transform:translateY(-2px);box-shadow:0 6px 24px rgba(249,115,22,.45);}
+  .btn-email.sent{background:var(--green);box-shadow:0 4px 20px rgba(34,197,94,.3);}
+  .email-note{font-size:12px;color:var(--muted);margin-top:10px;}
+  .email-note strong{color:var(--accent);}
+  .btn-reset{background:transparent;border:1.5px solid var(--border);color:var(--muted);font-family:'Sora',sans-serif;font-size:13px;font-weight:600;padding:10px 22px;border-radius:8px;cursor:pointer;transition:all .15s;margin-top:12px;}
+  .btn-reset:hover{border-color:var(--accent);color:var(--accent);}
+
+  @keyframes fadeIn{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
+  @media(max-width:600px){
+    .header{flex-wrap:wrap;gap:8px;padding:16px;}
+    .header-sub{display:none;}
+    .container{padding:20px 16px 0;}
+    .q-card{padding:18px 16px;}
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-badge">Fiche 2</div>
+  <div class="header-title">Convaincre vs Persuader</div>
+  <div class="header-sub">7 questions</div>
+  <div class="score-pill">Score : <span id="score-display">0</span>/5</div>
+</div>
+
+<div class="container">
+  <div class="progress-wrap"><div class="progress-bar" id="progress-bar"></div></div>
+
+  <div class="name-box">
+    <div class="name-label">👤 Ton prénom et nom</div>
+    <input type="text" class="name-input" id="learner-name" placeholder="Ex : Marie Dupont" autocomplete="name">
+  </div>
+
+  <div class="intro-box">
+    📋 <strong>Instructions :</strong> Réponds à chaque question. Pour les QCM et Vrai/Faux, clique sur ta réponse puis valide. Pour les questions ouvertes, écris ta réponse puis révèle un exemple. À la fin, envoie tes réponses en un clic.
+  </div>
+
+  <!-- QCM -->
+  <div class="section-label"><span class="tag tag-qcm">QCM</span><div class="section-line"></div></div>
+
+  <div class="q-card">
+    <div class="q-number">Question 1</div>
+    <div class="q-text">Tu dis : « Notre solution permet d'améliorer la productivité des équipes grâce à des modules structurés. » Ce type d'approche correspond à :</div>
+    <div class="options" id="opts-q1">
+      <div class="option" data-q="q1" data-val="A" onclick="selectOption(this)"><span class="option-letter">A</span><span class="option-text">Persuasion</span></div>
+      <div class="option" data-q="q1" data-val="B" onclick="selectOption(this)"><span class="option-letter">B</span><span class="option-text">Conviction (argumentation logique)</span></div>
+      <div class="option" data-q="q1" data-val="C" onclick="selectOption(this)"><span class="option-letter">C</span><span class="option-text">Manipulation</span></div>
+      <div class="option" data-q="q1" data-val="D" onclick="selectOption(this)"><span class="option-letter">D</span><span class="option-text">Improvisation</span></div>
+    </div>
+    <div class="btn-row"><button class="btn btn-primary" id="btn-q1" onclick="checkQCM('q1','B','C\'est un argument logique qui parle au cerveau rationnel, pas aux émotions.')" disabled>✓ Valider</button></div>
+    <div class="feedback" id="fb-q1"></div>
+  </div>
+
+  <div class="q-card">
+    <div class="q-number">Question 2</div>
+    <div class="q-text">Quelle version est la plus persuasive pour remplacer « Notre solution permet de gagner du temps » ?</div>
+    <div class="options" id="opts-q2">
+      <div class="option" data-q="q2" data-val="A" onclick="selectOption(this)"><span class="option-letter">A</span><span class="option-text">« Notre solution est très performante. »</span></div>
+      <div class="option" data-q="q2" data-val="B" onclick="selectOption(this)"><span class="option-letter">B</span><span class="option-text">« Combien d'heures perdez-vous chaque semaine sur des tâches répétitives ? »</span></div>
+      <div class="option" data-q="q2" data-val="C" onclick="selectOption(this)"><span class="option-letter">C</span><span class="option-text">« Notre technologie est innovante. »</span></div>
+      <div class="option" data-q="q2" data-val="D" onclick="selectOption(this)"><span class="option-letter">D</span><span class="option-text">« Nous avons beaucoup de clients. »</span></div>
+    </div>
+    <div class="btn-row"><button class="btn btn-primary" id="btn-q2" onclick="checkQCM('q2','B','Poser une question qui fait ressentir la perte est bien plus puissant qu\'une affirmation logique.')" disabled>✓ Valider</button></div>
+    <div class="feedback" id="fb-q2"></div>
+  </div>
+
+  <div class="q-card">
+    <div class="q-number">Question 3</div>
+    <div class="q-text">Quel est le vrai rôle d'un argument logique dans une vente selon la fiche ?</div>
+    <div class="options" id="opts-q3">
+      <div class="option" data-q="q3" data-val="A" onclick="selectOption(this)"><span class="option-letter">A</span><span class="option-text">Déclencher la décision d'achat</span></div>
+      <div class="option" data-q="q3" data-val="B" onclick="selectOption(this)"><span class="option-letter">B</span><span class="option-text">Remplacer les émotions pour convaincre</span></div>
+      <div class="option" data-q="q3" data-val="C" onclick="selectOption(this)"><span class="option-letter">C</span><span class="option-text">Rassurer le prospect après que l'émotion a provoqué la décision</span></div>
+      <div class="option" data-q="q3" data-val="D" onclick="selectOption(this)"><span class="option-letter">D</span><span class="option-text">Prouver que tu es le meilleur sur le marché</span></div>
+    </div>
+    <div class="btn-row"><button class="btn btn-primary" id="btn-q3" onclick="checkQCM('q3','C','Les arguments logiques rassurent APRÈS coup. C\'est l\'émotion qui provoque la décision.')" disabled>✓ Valider</button></div>
+    <div class="feedback" id="fb-q3"></div>
+  </div>
+
+  <!-- VRAI / FAUX -->
+  <div class="section-label"><span class="tag tag-vf">Vrai / Faux</span><div class="section-line"></div></div>
+
+  <div class="q-card">
+    <div class="q-number">Question 4</div>
+    <div class="q-text">Le cerveau rationnel est celui qui prend la décision finale de passer à l'action.</div>
+    <div class="vf-group" id="vf-q4">
+      <button class="vf-btn" id="vf-q4-vrai" onclick="selectVF('q4','VRAI',this)">✅ VRAI</button>
+      <button class="vf-btn" id="vf-q4-faux" onclick="selectVF('q4','FAUX',this)">❌ FAUX</button>
+    </div>
+    <div class="btn-row"><button class="btn btn-primary" id="btn-q4" onclick="checkVF('q4','FAUX','C\'est l\'émotion qui déclenche l\'action. Le cerveau rationnel analyse, compare et procrastine.')" disabled>✓ Valider</button></div>
+    <div class="feedback" id="fb-q4"></div>
+  </div>
+
+  <div class="q-card">
+    <div class="q-number">Question 5</div>
+    <div class="q-text">Pour persuader, il vaut mieux faire sentir au prospect ce qu'il perd en ne changeant rien.</div>
+    <div class="vf-group" id="vf-q5">
+      <button class="vf-btn" id="vf-q5-vrai" onclick="selectVF('q5','VRAI',this)">✅ VRAI</button>
+      <button class="vf-btn" id="vf-q5-faux" onclick="selectVF('q5','FAUX',this)">❌ FAUX</button>
+    </div>
+    <div class="btn-row"><button class="btn btn-primary" id="btn-q5" onclick="checkVF('q5','VRAI','Faire ressentir le danger du statu quo est plus puissant que d\'expliquer les avantages de ta solution.')" disabled>✓ Valider</button></div>
+    <div class="feedback" id="fb-q5"></div>
+  </div>
+
+  <!-- QUESTIONS OUVERTES -->
+  <div class="section-label"><span class="tag tag-open">Questions ouvertes</span><div class="section-line"></div></div>
+
+  <div class="q-card">
+    <div class="q-number">Question 6</div>
+    <div class="q-text">Pourquoi un prospect peut-il trouver ton idée « intelligente » sans pour autant accepter de te donner 15 minutes ?<em>→ Réponds en 2-3 phrases en t'appuyant sur la distinction convaincre / persuader.</em></div>
+    <textarea class="open-textarea" id="open-q6" placeholder="Écris ta réponse ici (2-3 phrases)..."></textarea>
+    <div class="btn-row"><button class="btn btn-ghost" onclick="toggleExample('ex-q6',this)">💡 Voir un exemple</button></div>
+    <div class="feedback example-fb" id="ex-q6"><strong>Exemple de réponse</strong>Parce que convaincre parle au cerveau rationnel qui analyse et remet à plus tard. Pour qu'il accepte un RDV, il faut qu'il ressente une urgence ou une frustration — pas juste qu'il trouve l'idée logique.</div>
+  </div>
+
+  <div class="q-card">
+    <div class="q-number">Question 7</div>
+    <div class="q-text">Transforme cet argument logique en phrase persuasive :<em>« Daylindo permet de structurer la transmission des compétences dans vos équipes. »<br>→ Écris une phrase qui fait ressentir une émotion (frustration, urgence, peur de perdre du terrain).</em></div>
+    <textarea class="open-textarea" id="open-q7" placeholder="Écris ta version persuasive ici..."></textarea>
+    <div class="btn-row"><button class="btn btn-ghost" onclick="toggleExample('ex-q7',this)">💡 Voir un exemple</button></div>
+    <div class="feedback example-fb" id="ex-q7"><strong>Exemple de réponse</strong>« Quand votre meilleur technicien part à la retraite dans 6 mois, est-ce que ses 20 ans de savoir-faire partent avec lui ? C'est ce que la plupart des entreprises découvrent trop tard. »</div>
+  </div>
+
+  <!-- RÉSUMÉ FINAL -->
+  <div class="summary" id="summary">
+    <div class="summary-score" id="summary-score">0/5</div>
+    <div class="summary-sub">sur les questions QCM + Vrai/Faux</div>
+    <div class="summary-msg" id="summary-msg"></div>
+
+    <div class="email-cta">
+      <div class="email-cta-title">📨 Envoie tes réponses à ton formateur</div>
+      <div class="email-cta-desc">Un clic ouvre ta messagerie avec tout pré-rempli — score, réponses QCM et réponses ouvertes.<br>Envoyé directement à <strong>miora@daylindo.com</strong>.</div>
+      <button class="btn-email" id="email-btn" onclick="sendByEmail()">✉️ Envoyer mes réponses</button>
+      <div class="email-note">Ton client mail (Gmail, Outlook…) s'ouvrira avec le message prêt à envoyer.</div>
+    </div>
+    <button class="btn-reset" onclick="resetAll()">🔄 Recommencer</button>
+  </div>
+</div>
+
+<script>
+  const RECIPIENT = 'miora@daylindo.com';
+  const TOTAL_AUTO = 5;
+
+  const state = {
+    q1:null,q2:null,q3:null,q4:null,q5:null,
+    checked:{q1:false,q2:false,q3:false,q4:false,q5:false},
+    results:{q1:null,q2:null,q3:null,q4:null,q5:null},
+    score:0, totalChecked:0
+  };
+  const vfSelected = {};
+
+  function selectOption(el){
+    const q=el.dataset.q;
+    if(state.checked[q])return;
+    document.querySelectorAll('[data-q="'+q+'"]').forEach(o=>o.classList.remove('selected'));
+    el.classList.add('selected');
+    state[q]=el.dataset.val;
+    document.getElementById('btn-'+q).disabled=false;
+  }
+
+  function checkQCM(q,correct,explanation){
+    if(state.checked[q])return;
+    state.checked[q]=true;
+    const chosen=state[q];
+    document.getElementById('btn-'+q).disabled=true;
+    document.querySelectorAll('[data-q="'+q+'"]').forEach(o=>{
+      o.classList.add('disabled');
+      if(o.dataset.val===correct)o.classList.add('correct');
+      else if(o.dataset.val===chosen&&chosen!==correct)o.classList.add('wrong');
+    });
+    const isCorrect=chosen===correct;
+    if(isCorrect)state.score++;
+    state.results[q]={chosen,correct,isCorrect,type:'QCM'};
+    const fb=document.getElementById('fb-'+q);
+    fb.className='feedback '+(isCorrect?'correct-fb':'wrong-fb')+' show';
+    fb.innerHTML=isCorrect
+      ?'<strong>✅ Bonne réponse !</strong>'+explanation
+      :'<strong>❌ Pas tout à fait…</strong>La bonne réponse était <strong>'+correct+'</strong> — '+explanation;
+    afterCheck();
+  }
+
+  function selectVF(q,val,el){
+    if(state.checked[q])return;
+    document.getElementById('vf-'+q).querySelectorAll('.vf-btn').forEach(b=>b.classList.remove('selected'));
+    el.classList.add('selected');
+    vfSelected[q]=val;
+    document.getElementById('btn-'+q).disabled=false;
+  }
+
+  function checkVF(q,correct,explanation){
+    if(state.checked[q])return;
+    state.checked[q]=true;
+    const chosen=vfSelected[q];
+    document.getElementById('btn-'+q).disabled=true;
+    const vBtn=document.getElementById('vf-'+q+'-vrai');
+    const fBtn=document.getElementById('vf-'+q+'-faux');
+    vBtn.classList.add('disabled');fBtn.classList.add('disabled');
+    (correct==='VRAI'?vBtn:fBtn).classList.add('correct');
+    if(chosen!==correct)(chosen==='VRAI'?vBtn:fBtn).classList.add('wrong');
+    const isCorrect=chosen===correct;
+    if(isCorrect)state.score++;
+    state.results[q]={chosen,correct,isCorrect,type:'Vrai/Faux'};
+    const fb=document.getElementById('fb-'+q);
+    fb.className='feedback '+(isCorrect?'correct-fb':'wrong-fb')+' show';
+    fb.innerHTML=isCorrect
+      ?'<strong>✅ Correct !</strong>'+explanation
+      :'<strong>❌ Pas tout à fait…</strong>La bonne réponse était <strong>'+correct+'</strong> — '+explanation;
+    afterCheck();
+  }
+
+  function toggleExample(id,btn){
+    const el=document.getElementById(id);
+    el.classList.toggle('show');
+    btn.textContent=el.classList.contains('show')?'🙈 Masquer l\'exemple':'💡 Voir un exemple';
+  }
+
+  function afterCheck(){
+    state.totalChecked++;
+    document.getElementById('score-display').textContent=state.score;
+    document.getElementById('progress-bar').style.width=(state.totalChecked/TOTAL_AUTO*100)+'%';
+    if(state.totalChecked===TOTAL_AUTO)showSummary();
+  }
+
+  function buildEmailBody(){
+    const name=document.getElementById('learner-name').value.trim()||'(nom non renseigné)';
+    const q6=document.getElementById('open-q6').value.trim()||'(pas de réponse)';
+    const q7=document.getElementById('open-q7').value.trim()||'(pas de réponse)';
+    const r=state.results;
+    const line=(n,res)=>(res.isCorrect?'[OK]':'[X]')+' Q'+n+' ('+res.type+') : '+res.chosen+(res.isCorrect?'':' --> Bonne reponse : '+res.correct);
+    return `Bonjour Miora,
+
+Voici mes reponses pour les exercices de la Fiche 2.
+
+Apprenant : ${name}
+Score QCM + Vrai/Faux : ${state.score}/5
+
+--- RESULTATS ---
+${line(1,r.q1)}
+${line(2,r.q2)}
+${line(3,r.q3)}
+${line(4,r.q4)}
+${line(5,r.q5)}
+
+--- QUESTIONS OUVERTES ---
+
+Q6 - Convaincre vs Persuader (pourquoi logique ne suffit pas) :
+${q6}
+
+Q7 - Argument logique transforme en phrase persuasive :
+${q7}`;
+  }
+
+  function sendByEmail(){
+    const name=document.getElementById('learner-name').value.trim()||'Apprenant';
+    const subject=encodeURIComponent('Exercices Fiche 2 — '+name);
+    const body=encodeURIComponent(buildEmailBody());
+    window.location.href='mailto:'+RECIPIENT+'?subject='+subject+'&body='+body;
+    const btn=document.getElementById('email-btn');
+    btn.textContent='✅ Messagerie ouverte !';
+    btn.classList.add('sent');
+    setTimeout(()=>{btn.textContent='✉️ Envoyer mes réponses';btn.classList.remove('sent');},4000);
+  }
+
+  function showSummary(){
+    const msgs=['😅 Pas de panique ! Relis la fiche 2 et recommence.','🙂 C\'est un début ! Reviens sur les points clés.','👍 Bien ! Consolide les questions ratées.','💪 Très bien ! Tu assimiles bien la distinction.','🎉 Excellent ! Presque parfait.','🏆 Parfait ! Tu maîtrises convaincre vs persuader.'];
+    document.getElementById('summary-score').textContent=state.score+'/5';
+    document.getElementById('summary-msg').textContent=msgs[state.score];
+    const s=document.getElementById('summary');
+    s.classList.add('show');
+    s.scrollIntoView({behavior:'smooth',block:'center'});
+  }
+
+  function resetAll(){location.reload();}
+</script>
+</body>
+</html>
